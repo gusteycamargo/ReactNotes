@@ -1,9 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
+import api from '../services/api';
 
 function Details({ navigation }) {
-    
+    async function getNotes() {
+        const response = await api.get('/notes');
+
+        console.log(response);
+    }
+
     return(
        <ScrollView style={styles.main}>
             <View style={styles.card}>
@@ -12,7 +18,7 @@ function Details({ navigation }) {
                     <Text>Detalhes das notas aqui</Text>
                 </View>
                 <View style={styles.buttonsGroup}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={getNotes}>
                         <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
                     </TouchableOpacity>
                     <TouchableOpacity>

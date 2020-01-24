@@ -1,33 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import api from '../services/api';
 
 function Main({ navigation }) {
-    const [note, setNote] = useState({
-        title: '',
-        detail: '',
-    });
-    const [title, setTitle] = useState(undefined)
-    const [detail, setDetail] = useState(undefined)
+    const [title, setTitle] = useState('')
+    const [detail, setDetail] = useState('')
 
-    function saveNote() {
-        let noteComplete;
-
-        (title === undefined && detail === undefined) ?
-            Alert.alert('Erro' ,'Preencha todos os campos')
-        :
-            noteComplete = {
-                title,
-                detail,
-            };
-            
-            setNote(noteComplete);
-
-            console.log(note);
-
-            setTitle(undefined);
-            setDetail(undefined);
+    async function saveNote() {
         
+            console.log('amem')
+            const notes = await api.post('/notes', {
+                params: {
+                    title,
+                    detail,
+                }
+            });
+
+            console.log(notes);
+
+            
     }
 
     return(
