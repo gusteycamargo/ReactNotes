@@ -1,76 +1,51 @@
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { Alert, View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import api from '../services/api';
 
 function Details({ navigation }) {
-    async function getNotes() {
-        const response = await api.get('/notes');
+    const [notes, setNotes] = useState([]);
 
-        console.log(response);
+    useEffect(() => {
+        async function getNotes() {
+            const { data } = await api.get('/notes');
+
+            
+            setNotes(data);
+        }
+
+        getNotes();
+    }, [notes]);
+
+    async function deleteNote(id) {
+        const url = `/notes/${id}`
+        await api.delete(url, {
+            data: {
+                foo: 'bar',
+            }
+        });
+        
+        Alert.alert('Sucesso', 'Excluído com sucesso');
     }
 
     return(
        <ScrollView style={styles.main}>
-            <View style={styles.card}>
-                <View>
-                    <Text style={styles.noteTitle}>Título</Text>
-                    <Text>Detalhes das notas aqui</Text>
+           {notes.map( note => (
+                <View key={note.id} style={styles.card}>
+                    <View>
+                        <Text style={styles.noteTitle}>{note.title}</Text>
+                        <Text>{note.detail}</Text>
+                    </View>
+                    <View style={styles.buttonsGroup}>
+                        <TouchableOpacity onPress={() => deleteNote(note.id)}>
+                            <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <MaterialIcons name="edit" style={styles.buttons} color="#FFF"/>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={styles.buttonsGroup}>
-                    <TouchableOpacity onPress={getNotes}>
-                        <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <MaterialIcons name="edit" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.card}>
-                <View>
-                    <Text style={styles.noteTitle}>Título</Text>
-                    <Text>Detalhes das notas aqui</Text>
-                </View>
-                <View style={styles.buttonsGroup}>
-                    <TouchableOpacity>
-                        <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <MaterialIcons name="edit" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.card}>
-                <View>
-                    <Text style={styles.noteTitle}>Título</Text>
-                    <Text>Detalhes das notas aqui</Text>
-                </View>
-                <View style={styles.buttonsGroup}>
-                    <TouchableOpacity>
-                        <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <MaterialIcons name="edit" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.card}>
-                <View>
-                    <Text style={styles.noteTitle}>Título</Text>
-                    <Text>Detalhes das notas aqui</Text>
-                </View>
-                <View style={styles.buttonsGroup}>
-                    <TouchableOpacity>
-                        <MaterialIcons name="delete" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <MaterialIcons name="edit" style={styles.buttons} color="#FFF"/>
-                    </TouchableOpacity>
-                </View>
-            </View>
+           ))}
         </ScrollView>    
     );
 }

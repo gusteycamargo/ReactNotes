@@ -8,18 +8,20 @@ function Main({ navigation }) {
     const [detail, setDetail] = useState('')
 
     async function saveNote() {
-        
-            console.log('amem')
-            const notes = await api.post('/notes', {
-                params: {
-                    title,
-                    detail,
-                }
-            });
+        if(title === '' || detail === ''){
+            Alert.alert('Erro', 'Preencha todos os campos');
+        }
+        else {
+            const data = {
+                title,
+                detail
+            }
 
-            console.log(notes);
-
-            
+            await api.post('/notes', data);
+            setTitle('');
+            setDetail('');
+            Alert.alert('Sucesso', 'Nota cadastrada');
+        }
     }
 
     return(
